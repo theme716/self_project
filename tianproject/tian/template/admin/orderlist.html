@@ -1,0 +1,80 @@
+{% extends "admin/public/pub.html" %}
+{% block con-header %}
+<div class="container-fluid am-cf">
+    <div class="row">
+        <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+            <div class="page-header-heading">
+                <span class="am-icon-user page-header-heading-icon"></span> 
+                订单列表 </div>
+        </div>
+</div>
+</div>
+{% endblock %}
+
+
+{% block con-body %}
+
+
+<div class="am-u-sm-12">
+                <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black ">
+                    <thead>
+                        <tr>
+                            <th>订单号</th>
+                            <th>订单时间</th>
+                            <th>用户</th>
+                            <th>总价</th>
+                            <th>总数</th>
+                            <th>状态</th>
+                            
+                            
+
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for v in order %}
+                        <tr class="gradeX">
+                            
+                            <td class="am-text-middle">{{v.id}}</td>
+                            <td class="am-text-middle">{{v.addtime|date:'Y-m-d H:i:s'}}</td>
+                            <td class="am-text-middle">{{v.uid.username}}</td>
+                            <td class="am-text-middle">{{v.totalprice}}</td>
+                            <td class="am-text-middle">{{v.totalnum}}</td>
+                            <td class="am-text-middle">
+                                        <select oid="{{ v.id }}" class="order_status" style="color:#000">
+                                            <option value="1" {% if v.status == 1 %} selected {% endif %}>未付款</option>
+                                            <option value="2" {% if v.status == 2 %} selected {% endif %}>待发货</option>
+                                            <option value="3" {% if v.status == 3 %} selected {% endif %}>待收货</option>
+                                            <option value="4" {% if v.status == 4 %} selected {% endif %}>待评价</option>
+                                            <option value="5" {% if v.status == 5 %} selected {% endif %}>已取消</option>
+
+
+
+                                        </select>
+                                    </td>
+                            <td><a href="{% url 'admin_orderinfo' v.id%}">订单详情</a></td>
+                            
+                        </tr>
+
+                        
+                        <!-- more data -->
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+
+<script type="text/javascript">
+    $('.order_status').change(function(){
+        //获取当前选择状态
+        s = $(this).val()
+        //获取用户ID
+        id = $(this).attr('oid')
+
+        $.get('{% url "orderstatus" %}',{oid:id,status:s})
+    })
+</script>
+
+{%endblock%}
+

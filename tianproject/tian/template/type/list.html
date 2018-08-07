@@ -1,0 +1,116 @@
+{% extends "admin/public/pub.html" %}
+{% block con-header %}
+<div class="container-fluid am-cf">
+    <div class="row">
+        <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+            <div class="page-header-heading">
+                <span class="am-icon-user page-header-heading-icon"></span> 
+                商品分类列表 </div>
+        </div>
+</div>
+</div>
+{% endblock %}
+
+
+{% block con-body %}
+<div class="widget-body  am-fr">
+
+        <div class="am-u-sm-12 am-u-md-6 am-u-lg-6">
+            <div class="am-form-group">
+                <div class="am-btn-toolbar">
+                   
+                </div>
+            </div>
+        </div>
+
+        <form>
+            <div class="am-u-sm-12 am-u-md-6 am-u-lg-3">
+                <div class="am-form-group tpl-table-list-select">
+                    <select name="type" data-am-selected="{btnSize: 'sm'}" style="display: none;">
+                      <option value="all">类别名称</option>
+                      
+
+                    </select>     
+                </div>
+            </div>
+            <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
+                <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+                    <input name="keywords" value="{{ request.GET.keywords }}" type="text" class="am-form-field ">
+                    <span class="am-input-group-btn">
+            <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search" type="button"></button>
+          </span>
+                </div>
+            </div>
+        </form>  
+            <div class="am-u-sm-12">
+                <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black ">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>分类名称</th>
+                            <th>所属分类</th>
+                            <th>path路径</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for v in tlist %}
+                        <tr class="gradeX">
+                            <td class="am-text-middle tid">{{v.id}}</td>
+                            <td class="am-text-middle">{{v.name}}</td>
+                            <td class="am-text-middle">{{v.pname}}</td>
+                            <td class="am-text-middle">{{v.path}}</td>
+                            <td class="am-text-middle">
+                                <div class="tpl-table-black-operation">
+                                    <a href="{% url 'admin_typeedit' v.id%}">
+                                        <i class="am-icon-pencil"></i> 编辑
+                                    </a>
+                                    <a href="" class="tpl-table-black-operation-del">
+                                        <i class="am-icon-trash"></i> 删除
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {%endfor%}
+                        
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="am-u-lg-12 am-cf">
+
+                <div class="am-fr">
+                    <ul class="am-pagination tpl-pagination">
+                    {% load pagetag %}
+
+                    {% showpage tlist.paginator.num_pages request %}
+                       
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+<script type="text/javascript">
+
+    //分类删除 ajax
+    $('.tpl-table-black-operation-del').click(function(){
+        a = $(this)
+
+        //获取用户的id 
+        tid = $(this).parents('.gradeX').find('.tid').text()
+
+        //发送ajax,执行逻辑删除
+        $.get('{% url "admin_typedel"%}',{tid:tid},function(data){
+
+            if(data['status']==0){
+                a.parents('tr').remove()
+            }
+            console.log(data['msg'])
+        },'json')
+
+        //阻止默认行为 阻止刷新
+        return false
+    })
+</script>
+
+{%endblock%}

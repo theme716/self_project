@@ -1,0 +1,186 @@
+{% extends 'home/public/base.html' %}
+
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/static/home/public/css/order.css">
+<link rel="stylesheet" type="text/css" href="/static/home/public/css/order-app.css">
+
+
+
+{% endblock %}
+
+{% block con %}
+<div class="mainbody order">
+    <div class="container">
+        <!-- 面包屑导航 -->
+        <div class="crumbs col-xs-12 col-sm-12">
+            <ol class="breadcrumb">
+                <li class="hidden-xs hidden-sm"><a href="index.html">首页</a></li>
+                <li class="hidden-xs hidden-sm"><a href="member.html">我的商城</a></li>
+                <li class="active">收货地址信息</li>
+            </ol>
+        </div><!-- 面包屑导航 E-->
+        
+        <div class="main clearfix">
+
+            <!-- 左侧导航 -->
+            <div class="left-nav f-fl col-md-4 hidden-xs hidden-sm">
+                <div class="nav-main">
+                    <a href="javascript:;" class="type-title"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>订单中心</a>
+                    <a href="order.html" class="ml " >我的订单</a>
+                    <a href="#" class="ml ">我的回购单</a>
+                    <a href="#" class="ml ">我的意外保</a>
+                    <a href="javascript:;" class="type-title"><span class="glyphicon glyphicon-user" aria-hidden="true" class="ml active"></span>个人中心</a>
+                    <a href="/#" class="ml ">地址管理</a>
+                    <a href="#" class="ml ">我的收藏</a>
+                    <a href="#" class="ml ">消息提醒</a>
+                    <a href="#" class="ml ">建议反馈</a>
+                </div>
+            </div><!-- 左侧导航 E-->
+            <!-- 右侧内容展示 -->
+            <div class="right-content f-fr col-md-8 col-xs-12 col-sm-12">
+                <div class="order-main">
+            <div class="mainbody cart">
+                    <div class="container">
+                        <h4>收货信息确认:
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">添加收货地址</button>
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-10 col-md-offset-1">
+                                <div class="row">
+                                {% for v in address %}
+
+                                    <div class="col-md-3 address-items tian" aid="{{ v.id }}" ischecked="{{ v.status }}" {% if v.status == 1%} style="border:2px dashed red;margin-left: 5px;margin-top: 5px;" {% else %} style="border:2px solid black;margin-left: 5px;margin-top: 5px;" {% endif %}>
+                                        <div class="btns" style="position: absolute;top:0px;right:0px;display: none">
+                                            <button class="tian1" aid="{{ v.id }}">设为默认</button>
+                                            <button class="tian2" aid="{{ v.id }}">删除</button>
+                                        </div>
+                                        <address>
+                                          <strong>收货人:{{ v.aname }}</strong><br>
+                                          收货地址:{{ v.aads }}<br>
+                                          <abbr title="Phone">收货电话:</abbr>{{ v.aphone }}
+                                        </address>
+                                        
+                                    </div>
+                                {%endfor%}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                     </div>
+
+
+
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            
+            <form action="{% url 'useraddressinfo' %}" method="post">
+                {% csrf_token %}
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">添加收货地址</h4>
+              </div>
+              <div class="modal-body">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">收货人</label>
+                    <input type="text" name="aname" class="form-control"  placeholder="收货人">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">收货电话</label>
+                    <input type="text" name="aphone" class="form-control"  placeholder="收货电话">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">收货地址</label>
+                    <input type="text" name="aads" class="form-control"  placeholder="收货地址">
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input name="status" value="1" type="checkbox"> 是否设为默认地址
+                    </label>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button  class="btn btn-primary">保存</button>
+              </div>
+            </form>
+
+            </div>
+          </div>
+        </div>
+        </div>
+    </div>  
+</div>
+</div>
+</div>
+</div>
+<script src="/static/admin/js/amazeui.min.js"></script>
+    <script src="/static/admin/js/amazeui.datatables.min.js"></script>
+    <script src="/static/admin/js/dataTables.responsive.min.js"></script>
+    <script src="/static/admin/js/app.js"></script>
+
+{% endblock %}
+{% block js %}
+  <script type="text/javascript">
+  //回顶部
+   backTop();
+  //顶部导航鼠标经过出现内容
+   topNav();
+  //登录图片鼠标经过
+   topLogin();
+   //
+   leftNav();
+
+
+
+
+    // 给所有的地址 绑定单击事件
+    $('.address-items').click(function(){
+        // 给当前选择的地址添加样式,
+        $(this).css('border','2px dashed red').siblings().css('border','2px solid black')
+        // 把当前选择的地址id添加到表单中
+        aid = $(this).attr('aid')
+        $('input[name=addressid]').val(aid)
+    })
+    $('.address-items').hover(function(){
+        $(this).find('.btns').show()
+    },function(){
+        $(this).find('.btns').hide()
+    })
+
+    
+
+    $('.tian1').click(function(){
+        aid = $(this).attr('aid')
+        
+        $.get('{% url "addressajax"%}',{aid:aid},function(data){
+            alert(data['msg'])
+
+        },'json')
+
+    })
+
+
+
+    $('.tian2').click(function(){
+        aid = $(this).attr('aid')
+        ob = $(this)
+        $.get('{% url "addressdel"%}',{aid:aid},function(data){
+            alert(data['msg'])
+            ob.parents('.tian').remove()
+
+        },'json')
+    })
+
+    
+
+   
+
+
+
+   
+  </script>
+{% endblock %}

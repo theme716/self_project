@@ -1,0 +1,192 @@
+{% extends 'home/public/base.html' %}
+
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/static/home/public/css/order.css">
+<link rel="stylesheet" type="text/css" href="/static/home/public/css/order-app.css">
+
+
+
+{% endblock %}
+
+{% block con %}
+<div class="mainbody order">
+    <div class="container">
+        <!-- 面包屑导航 -->
+        <div class="crumbs col-xs-12 col-sm-12">
+            <ol class="breadcrumb">
+                <li class="hidden-xs hidden-sm"><a href="index.html">首页</a></li>
+                <li class="hidden-xs hidden-sm"><a href="member.html">我的商城</a></li>
+                <li class="active">个人中心</li>
+            </ol>
+        </div><!-- 面包屑导航 E-->
+        
+        <div class="main clearfix">
+
+            <!-- 左侧导航 -->
+            <div class="left-nav f-fl col-md-4 hidden-xs hidden-sm">
+                <div class="nav-main">
+                    <a href="javascript:;" class="type-title"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>订单中心</a>
+                    <a href="order.html" class="ml " >我的订单</a>
+                    <a href="#" class="ml ">我的回购单</a>
+                    <a href="#" class="ml ">我的意外保</a>
+                    <a href="javascript:;" class="type-title"><span class="glyphicon glyphicon-user" aria-hidden="true" class="ml active"></span>个人中心</a>
+                    <a href="{% url 'useraddressinfo'%}" class="ml ">地址管理</a>
+                    <a href="#" class="ml ">我的收藏</a>
+                    <a href="#" class="ml ">消息提醒</a>
+                    <a href="#" class="ml ">建议反馈</a>
+                </div>
+            </div><!-- 左侧导航 E-->
+            <!-- 右侧内容展示 -->
+            <div class="right-content f-fr col-md-8 col-xs-12 col-sm-12">
+                <div class="order-main">
+                    <form action="{% url 'userinfo'%}" method="post" enctype="multipart/form-data" class="am-form tpl-form-line-form">
+                        <input type="hidden" name="uid" value="{{ulist.id}}">
+                        
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">用户名</label>
+                            <input type="text" name="username" class="form-control"  placeholder="收货地址" value="{{ulist.username}}">
+                          </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">邮箱</label>
+                            <input type="text" name="email" class="form-control"  placeholder="收货地址" value="{{ulist.email}}">
+                          </div>
+
+                          <div class="form-group">
+                            <label for="exampleInputEmail1">手机号</label>
+                            <input type="text" name="phone" class="form-control"  placeholder="收货地址" value="{{ulist.phone}}">
+                          </div>
+
+                          <div class="form-group">
+                            <label for="exampleInputEmail1">年龄</label>
+                            <input type="text" name="age" class="form-control"  placeholder="收货地址" value="{{ulist.age}}">
+                          </div>
+
+
+                        
+
+                        
+
+                        
+
+                        
+
+                        <div class="am-form-group">
+                            
+                            <div class="am-u-sm-9">
+                                <div class="am-form-group">
+                                    <label for="user-name" class="am-u-sm-3 am-form-label">
+                                性别 :
+                            </label>
+                            {%if ulist.sex == '男'%}
+                                    <label class="am-radio-inline"><input type="radio" name="sex" value="男" checked> 男</label>
+                                    <label class="am-radio-inline"><input type="radio" name="sex" value="女"> 女</label>
+                            {%else%}
+                            <label class="am-radio-inline"><input type="radio" name="sex" value="男" > 男</label>
+                                    <label class="am-radio-inline"><input type="radio" name="sex" value="女" checked> 女</label>
+                                </div>
+                            {%endif%}
+                            </div>
+                        </div>
+
+                        <div class="am-form-group">
+                            <label for="user-weibo" class="am-u-sm-3 am-form-label">
+                                头像上传
+                            </label>
+                            <div class="am-u-sm-9">
+                                <div class="am-form-group am-form-file">
+                                    <div class="tpl-form-file-img">
+                                        <img id="filepicurl" src="{{ulist.picurl}}" alt="" width="150px;">
+                                        <!-- <input type="hidden" name="picurl" value=""> -->
+                                    </div>
+                                    <button type="button" class="am-btn am-btn-danger am-btn-sm">
+                                        <i class="am-icon-cloud-upload"></i> 选择头像上传</button>
+                                    <input id="doc-form-file" type="file" name="pic" multiple="">
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <script type="text/javascript">
+                                
+                                $('#doc-form-file').change(function(){
+                                // 创建一个表单对象
+                                var form = new FormData()
+                                // 获取当前选择的文件
+                                file = this.files[0]
+                                // 把当前的文件添加到 表单对象中
+                                form.append('pic',file)
+                                form.append('csrfmiddlewaretoken','OSIlq7NBkhUvSEaBD9ED0IbBLsP7zxAVzkOaZEZbBVIcoEIEOhmo9ZSzlApbdqKZ')
+
+
+                                // 发送ajax
+                                $.ajax({
+                                    // 请求地址
+                                    url : '/admin/ajax/upload/',
+                                    type : 'POST',
+                                    data : form,
+                                    processData:false,//设置ajax不处理发的数据
+                                    contentType:false,//不去设置context-Type请求头
+                                    async:true,//异步请求
+                                    success:function(data){
+                                        // 判断文件是否上传成功
+                                        if(data['code'] == 0){
+                                            // 把上传的图片动态加载到页面中
+                                            $('#filepicurl').attr('src',data['url'])
+                                            console.log(data['url'])
+
+                                            // 把上传的图片路径,添加到表单中
+                                            $('input[name=picurl]').val(data['url'])
+                                            
+                                        }else{
+                                            alert(data['msg'])
+                                        }
+                                    }
+                                },'json')
+
+                            })
+
+
+                            </script>
+
+        
+
+
+
+                        <input type="hidden" name="csrfmiddlewaretoken" value="OSIlq7NBkhUvSEaBD9ED0IbBLsP7zxAVzkOaZEZbBVIcoEIEOhmo9ZSzlApbdqKZ">
+                        <div class="am-form-group">
+                            <div class="am-u-sm-9 am-u-sm-push-3">
+                            <button class="am-btn am-btn-primary tpl-btn-bg-color-success ">提交</button></div>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>  
+</div>
+<script src="/static/admin/js/amazeui.min.js"></script>
+    <script src="/static/admin/js/amazeui.datatables.min.js"></script>
+    <script src="/static/admin/js/dataTables.responsive.min.js"></script>
+    <script src="/static/admin/js/app.js"></script>
+
+{% endblock %}
+{% block js %}
+  <script type="text/javascript">
+  //回顶部
+   backTop();
+  //顶部导航鼠标经过出现内容
+   topNav();
+  //登录图片鼠标经过
+   topLogin();
+   //
+   leftNav();
+
+
+   //ajax请求商品数量
+   
+  </script>
+{% endblock %}

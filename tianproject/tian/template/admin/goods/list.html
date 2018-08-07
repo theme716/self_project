@@ -1,0 +1,163 @@
+{% extends "admin/public/pub.html" %}
+{% block con-header %}
+<div class="container-fluid am-cf">
+    <div class="row">
+        <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+            <div class="page-header-heading">
+                <span class="am-icon-user page-header-heading-icon"></span> 
+                会员列表 </div>
+        </div>
+</div>
+</div>
+{% endblock %}
+
+
+{% block con-body %}
+<div class="widget-body  am-fr">
+
+        <div class="am-u-sm-12 am-u-md-6 am-u-lg-6">
+            <div class="am-form-group">
+                <div class="am-btn-toolbar">
+                   
+                </div>
+            </div>
+        </div>
+
+        <form>
+        <div class="am-u-sm-12 am-u-md-6 am-u-lg-3">
+            <div class="am-form-group tpl-table-list-select">
+            <select name="type" data-am-selected="{btnSize: 'sm'}" style="display: none;">
+              <option {% if request.GET.type == 'all'%} selected {% endif %} value="all">所有商品</option>
+              <option {% if request.GET.type == 'title'%} selected {% endif %} value="title">商品名称</option>
+              <option {% if request.GET.type == 'price'%} selected {% endif %} value="price">商品价格</option>
+              <option {% if request.GET.type == 'storage'%} selected {% endif %} value="storage">商品库存</option>
+              <option {% if request.GET.type == 'typeid'%} selected {% endif %} value="typeid">商品类型</option>
+              <option {% if request.GET.type == 'num'%} selected {% endif %} value="num">购买数量</option>
+              <option {% if request.GET.type == 'addtime'%} selected {% endif %} value="addtime">上架时间</option>
+              <option {% if request.GET.type == 'clicknum'%} selected {% endif %} value="clicknum">点击数量</option>
+              <option {% if request.GET.type == 'status'%} selected {% endif %} value="status">状态</option>
+              
+
+            </select>     
+                                    </div>
+                                </div>
+                                <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
+                                    <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+                                        <input name="keywords" value="{{ request.GET.keywords }}" type="text" class="am-form-field ">
+                                        <span class="am-input-group-btn">
+            <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search" ></button>
+          </span>
+                </div>
+            </div>
+        </form>  
+            <div class="am-u-sm-12">
+                <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black ">
+                    <thead>
+                        <tr>
+                            <th>缩略图</th>
+                            <th>商品ID</th>
+                            <th>商品名称</th>
+                            <th>商品分类</th>
+                            <th>商品价格</th>
+                            <th>商品库存</th>
+                            <th>购买数量</th>
+                            <th>点击数</th>
+                            <th>商品状态</th>
+                            <th>上架时间</th>
+                            <th>操作</th>
+
+
+
+
+                        </tr>
+                    </thead>
+                    
+
+                    <tbody>
+                        {% for v in glist %}
+                        <tr class="gradeX">
+                        
+                            <td>
+                                <img src="{{v.pic}}" class="tpl-table-line-img" alt="">
+                            </td>
+                            <td class="am-text-middle" name='gid'>{{v.id}}</td>
+                            <td class="am-text-middle">{{v.title}}</td>
+                            <td class="am-text-middle">{{v.typeid.name}}</td>
+                            <td class="am-text-middle">{{v.price}}</td>
+                            <td class="am-text-middle">{{v.storage}}</td>
+                            <td class="am-text-middle">{{v.num}}</td>
+                            <td class="am-text-middle">{{v.clicknum}}</td>
+
+                            <td class="am-text-middle">
+                                        <select gid="{{ v.id }}" class="goods_status" style="color:#000">
+                                            <option value="1" {% if v.status == 1 %} selected {% endif %}>新品</option>
+                                            <option value="2" {% if v.status == 2 %} selected {% endif %}>热销</option>
+                                            
+
+                                        </select>
+                            </td>
+                            <td class="am-text-middle">{{v.addtime|date:'Y-m-d H:i:s'}}</td>
+                            
+
+                            <td class="am-text-middle">
+                                <div class="tpl-table-black-operation">
+                                    <a href="{% url 'admin_goodsedit' v.id %}">
+                                        <i class="am-icon-pencil"></i> 编辑
+                                    </a>
+                                    <a class="tpl-table-black-operation-del">
+                                        <i class="am-icon-trash"></i> 删除
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        
+                        <!-- more data -->
+
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+            <div class="am-u-lg-12 am-cf">
+
+                <div class="am-fr">
+                    <ul class="am-pagination tpl-pagination">
+                       
+                    {% load pagetag %}
+
+                    {% showpage glist.paginator.num_pages request %}
+
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+<script type="text/javascript">
+    // 状态修改 ajax
+    $('.goods_status').change(function(){
+        // alert('haha')
+        s = $(this).val()
+        id = $(this).attr('gid')
+        $.get('{% url "admin_goodsstatus" %}',{status:s,gid:id})
+    })
+
+
+    $('.tpl-table-black-operation-del').click(function(){
+        a = $(this)
+        gid = $(this).parents('.gradeX').find('select').attr('gid')
+        // console.log(gid)
+
+        $.get('{% url "admin_goodsdelete" %}',{gid:gid},function(){
+            a.parents('tr').remove()
+            console.log('a')
+        })
+        return false;
+    })
+
+
+    //     $.get('{% url "admin_goodsdelete"%}',{gid:gid},function(){
+    //         a.parents('tr').remove()
+    //     })
+</script>
+{%endblock%}

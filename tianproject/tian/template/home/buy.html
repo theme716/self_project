@@ -1,0 +1,52 @@
+{% extends 'home/public/base.html' %}
+
+{% block css %}
+
+<link rel="stylesheet" type="text/css" href="/static/home/public/css/cart.css">
+<link rel="stylesheet" type="text/css" href="/static/home/public/css/cart-app.css">
+
+{% endblock %}
+
+
+{% block mbx %}
+<div class="navbar-left">
+    <ol class="breadcrumb">
+        <li >购物车</li>
+        <li >确认订单</li>
+        <li class="active">在线支付</li>
+        <li>完成 </li>
+    </ol>
+</div>
+
+{% endblock %}
+
+{% block con %}
+<br><br><br><br><br>
+<div class="mainbody cart">
+    <div class="container">
+    
+
+        请为你的订单支付:<br>
+        <p>订单号:{{ order.id }}</p>
+        <p>订单总价:{{ order.totalprice }}</p>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+  <script type="text/javascript">
+  //回顶部
+   backTop();
+  //顶部导航鼠标经过出现内容
+   topNav();
+  //登录图片鼠标经过
+   topLogin();
+   //
+   leftNav();
+
+
+   //ajax请求商品数量
+   
+  </script>
+{% endblock %}

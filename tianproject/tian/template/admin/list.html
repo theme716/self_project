@@ -1,0 +1,132 @@
+{% extends "admin/public/pub.html" %}
+{% block con-header %}
+<div class="container-fluid am-cf">
+    <div class="row">
+        <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+            <div class="page-header-heading">
+                <span class="am-icon-user page-header-heading-icon"></span> 
+                会员列表 </div>
+        </div>
+</div>
+</div>
+{% endblock %}
+
+
+{% block con-body %}
+<div class="widget-body  am-fr">
+
+        <div class="am-u-sm-12 am-u-md-6 am-u-lg-6">
+            <div class="am-form-group">
+                <div class="am-btn-toolbar">
+                   
+                </div>
+            </div>
+        </div>
+
+        <form>
+        <div class="am-u-sm-12 am-u-md-6 am-u-lg-3">
+            <div class="am-form-group tpl-table-list-select">
+            <select name="type" data-am-selected="{btnSize: 'sm'}" style="display: none;">
+              <option {% if request.GET.type == 'all'%} selected {% endif %} value="all">所有类别</option>
+              <option {% if request.GET.type == 'username'%} selected {% endif %} value="username">用户名</option>
+              <option {% if request.GET.type == 'email'%} selected {% endif %} value="email">邮箱</option>
+              <option {% if request.GET.type == 'phone'%} selected {% endif %} value="phone">电话号码</option>
+              <option {% if request.GET.type == 'sex'%} selected {% endif %} value="sex">性别</option>
+              <option {% if request.GET.type == 'age'%} selected {% endif %} value="age">年龄</option>
+              <option {% if request.GET.type == 'status'%} selected {% endif %} value="status">状态</option>
+            </select>     
+                                    </div>
+                                </div>
+                                <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
+                                    <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+                                        <input name="keywords" value="{{ request.GET.keywords }}" type="text" class="am-form-field ">
+                                        <span class="am-input-group-btn">
+            <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search" type="button"></button>
+          </span>
+                </div>
+            </div>
+        </form>  
+            <div class="am-u-sm-12">
+                <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black ">
+                    <thead>
+                        <tr>
+                            <th>会员头像</th>
+                            <th>用户名</th>
+                            <th>邮箱</th>
+                            <th>电话号码</th>
+                            <th>性别</th>
+                            <th>年龄</th>
+                            <th>状态</th>
+                            <th>注册时间</th>
+                            <th>操作</th>
+
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for v in ulist %}
+                        <tr class="gradeX">
+                            <td>
+                                <img src="{{v.picurl}}" class="tpl-table-line-img" alt="">
+                            </td>
+                            <td class="am-text-middle">{{v.username}}</td>
+                            <td class="am-text-middle">{{v.email}}</td>
+                            <td class="am-text-middle">{{v.phone}}</td>
+                            <td class="am-text-middle">{{v.sex}}</td>
+                            <td class="am-text-middle">{{v.age}}</td>
+                            <td class="am-text-middle">
+                                        <select uid="{{ v.id }}" class="user_status" style="color:#000">
+                                            <option value="0" {% if v.status == 0 %} selected {% endif %}>正常</option>
+                                            <option value="1" {% if v.status == 1 %} selected {% endif %}>禁用</option>
+                                            <option value="2" {% if v.status == 2 %} selected {% endif %}>管理员</option>
+
+                                        </select>
+                                    </td>
+                            <td class="am-text-middle">{{v.addtime|date:'Y-m-d H:i:s'}}</td>
+                            
+
+                            <td class="am-text-middle">
+                                <div class="tpl-table-black-operation">
+                                    <a href="{% url 'admin_useredit' v.id %}">
+                                        <i class="am-icon-pencil"></i> 编辑
+                                    </a>
+                                    <a href="{% url 'admin_userdel' v.id %}" class="tpl-table-black-operation-del">
+                                        <i class="am-icon-trash"></i> 删除
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        
+                        <!-- more data -->
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+            <div class="am-u-lg-12 am-cf">
+
+                <div class="am-fr">
+                    <ul class="am-pagination tpl-pagination">
+                       {% load pagetag %}
+
+                       {% showpage ulist.paginator.num_pages request %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+<script type="text/javascript">
+
+    $('.user_status').change(function(){
+        //获取当前选择状态
+        s = $(this).val()
+        //获取用户ID
+        id = $(this).attr('uid')
+
+        $.get('{% url "admin_userstatus" %}',{uid:id,status:s})
+    })
+</script>
+
+{%endblock%}
